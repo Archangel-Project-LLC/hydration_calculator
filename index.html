@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydration Calculator | Silverback Performance Coaching</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #051223;
+            --bg-card: #0a1e38;
+            --bg-elevated: #0f2847;
+            --border: #1a3a5c;
+            --text-primary: #ffffff;
+            --text-secondary: #a0b8d0;
+            --text-muted: #6a8aa8;
+            --accent: #4a7ab0;
+            --accent-hover: #5a8ac4;
+            --success: #32d74b;
+            --warning: #ffd60a;
+            --danger: #ff6b6b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .brand {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--accent);
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .select-field {
+            width: 100%;
+            padding: 14px 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--bg-elevated);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236a8aa8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+            transition: border-color 0.2s ease;
+        }
+
+        .select-field:focus {
+            border-color: var(--accent);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .checkbox-input {
+            display: none;
+        }
+
+        .checkbox-box {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .checkbox-input:checked + .checkbox-box {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .checkbox-box svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--text-primary);
+            stroke-width: 3;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .checkbox-input:checked + .checkbox-box svg {
+            opacity: 1;
+        }
+
+        .checkbox-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .calculate-btn,
+        .pdf-btn {
+            flex: 1;
+            padding: 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+        }
+
+        .calculate-btn {
+            background: var(--accent);
+        }
+
+        .calculate-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .pdf-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+        }
+
+        .pdf-btn:hover {
+            background: var(--bg-card);
+            transform: translateY(-2px);
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-main {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--accent), #3a6090);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .result-unit {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-left: 4px;
+        }
+
+        .result-note {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 12px;
+        }
+
+        .breakdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .breakdown-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .breakdown-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hydration-status {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .status-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .piss-chart {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .piss-level {
+            flex: 1;
+            height: 40px;
+            border-radius: 6px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .piss-level:hover {
+            transform: scaleY(1.1);
+        }
+
+        .piss-level.level-1 { background: #f5f5dc; }
+        .piss-level.level-2 { background: #f0e68c; }
+        .piss-level.level-3 { background: #daa520; }
+        .piss-level.level-4 { background: #b8860b; }
+        .piss-level.level-5 { background: #8b4513; }
+
+        .piss-labels {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .piss-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .piss-label.good { color: var(--success); }
+        .piss-label.bad { color: var(--danger); }
+
+        .rehydration-card {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-elevated));
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .rehydration-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .rehydration-percent {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .rehydration-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .rehydration-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .rehydration-example {
+            background: var(--bg-dark);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .rehydration-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .rehydration-note strong {
+            color: var(--text-secondary);
+        }
+
+        .electrolytes-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .electrolytes-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+
+        .electrolytes-body p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .electrolyte-when {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .electrolyte-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .electrolyte-check {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .electrolyte-tip {
+            background: var(--bg-elevated);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            border-left: 3px solid var(--success);
+        }
+
+        .tips {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .tips-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tip-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .tip-icon {
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .tip-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .tagline {
+            margin-top: 8px;
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        .license {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        .advanced-toggle {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .advanced-section {
+            margin-top: 12px;
+            display: none;
+        }
+
+        .advanced-section.show {
+            display: block;
+        }
+
+        .inline-note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Print styles so only the calculator content is printed / saved as PDF */
+        @media print {
+            body {
+                background: #ffffff;
+                color: #000000;
+                padding: 0;
+            }
+            .pdf-hide {
+                display: none !important;
+            }
+            .container {
+                max-width: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="calc-container">
+        <div class="header pdf-hide">
+            <div class="brand">Silverback Performance Coaching</div>
+            <h1 class="title">Hydration Calculator</h1>
+            <p class="subtitle">Find out exactly how much water you need</p>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Your Details</div>
+            
+            <div class="input-group">
+                <label class="input-label">Body Weight</label>
+                <div class="input-wrapper">
+                    <input type="number" id="weight" class="input-field" placeholder="80" min="30" max="200">
+                    <span class="input-unit">kg</span>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Training Duration Today</label>
+                <select id="training" class="select-field">
+                    <option value="0">Rest day</option>
+                    <option value="60">Up to 60 mins</option>
+                    <option value="90">60-90 mins</option>
+                    <option value="120">90-120 mins</option>
+                    <option value="150">2+ hours</option>
+                </select>
+                <div class="inline-note">Assumes a typical sweat rate of ~0.75L/hour during training.</div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Additional Factors</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="caffeine" class="checkbox-input">
+                        <span class="checkbox-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="checkbox-label">Very high caffeine / energy drinks</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="protein" class="checkbox-input">
+                        <span class="checkbox-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="checkbox-label">High protein diet (2g+ per kg)</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="hot" class="checkbox-input">
+                        <span class="checkbox-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="checkbox-label">Hot environment / heated gym</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" id="cutting" class="checkbox-input">
+                        <span class="checkbox-box">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </span>
+                        <span class="checkbox-label">Currently in a calorie deficit</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <span class="advanced-toggle" onclick="toggleAdvanced()">+ Advanced: use sweat rate / scale data</span>
+                <div id="advanced-section" class="advanced-section">
+                    <div class="input-group">
+                        <label class="input-label">Estimated Sweat Rate (optional)</label>
+                        <select id="sweat-preset" class="select-field">
+                            <option value="auto">Use default (0.75L/hour)</option>
+                            <option value="0.5">Low sweater (~0.5L/hour)</option>
+                            <option value="1.0">Medium-high (~1.0L/hour)</option>
+                            <option value="1.5">Heavy sweater (~1.5L/hour)</option>
+                        </select>
+                        <div class="inline-note">Typical range for active people is ~0.5–1.5L/hour. Weigh before and after a session to measure your own rate. [scale method]</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">Today’s weight change (optional)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="mass-change" class="input-field" placeholder="-0.8">
+                            <span class="input-unit">kg</span>
+                        </div>
+                        <div class="inline-note">Pre- to post-training. Use a negative number if you lost weight (e.g. -0.8).</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-row pdf-hide">
+            <button class="calculate-btn" onclick="calculate()">Calculate</button>
+            <button class="pdf-btn" onclick="downloadPdf()">Download PDF</button>
+        </div>
+
+        <div class="results" id="results">
+            <div class="result-main">
+                <div class="result-label">Your Daily Target</div>
+                <div class="result-value">
+                    <span id="total-litres">0</span><span class="result-unit">L</span>
+                </div>
+                <div class="result-note">
+                    That's <span id="total-ml">0</span>ml or <span id="total-glasses">0</span> glasses
+                </div>
+            </div>
+
+            <div class="breakdown">
+                <div class="breakdown-item">
+                    <div class="breakdown-value" id="baseline">0L</div>
+                    <div class="breakdown-label">Baseline</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-value" id="training-add">+0L</div>
+                    <div class="breakdown-label">Training</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-value" id="factors-add">+0L</div>
+                    <div class="breakdown-label">Factors</div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-value" id="per-hour">0ml</div>
+                    <div class="breakdown-label">Per Hour Awake</div>
+                </div>
+            </div>
+
+            <div class="hydration-status">
+                <div class="status-title">Check Your Piss</div>
+                <div class="piss-chart">
+                    <div class="piss-level level-1"></div>
+                    <div class="piss-level level-2"></div>
+                    <div class="piss-level level-3"></div>
+                    <div class="piss-level level-4"></div>
+                    <div class="piss-level level-5"></div>
+                </div>
+                <div class="piss-labels">
+                    <span class="piss-label good">✓ Hydrated</span>
+                    <span class="piss-label bad">✗ Dehydrated</span>
+                </div>
+            </div>
+
+            <div class="rehydration-card">
+                <div class="rehydration-header">
+                    <span class="rehydration-percent">150%</span>
+                    <div class="rehydration-text">
+                        <div class="rehydration-title">Post-Exercise Rehydration</div>
+                        <div class="rehydration-subtitle">Aim to consume ~150% of fluid lost during exercise within 4-6 hours post-training</div>
+                    </div>
+                </div>
+                <div class="rehydration-example" id="rehydration-example">
+                    Lost 1kg during training? Drink 1.5L in the 4-6 hours after.
+                </div>
+                <div class="rehydration-note">
+                    <strong>Why 150%?</strong> You continue losing fluid through sweat and urine after training. 150% accounts for ongoing losses and ensures full rehydration — especially important if you're training again within 12 hours.
+                </div>
+            </div>
+
+            <div class="electrolytes-card">
+                <div class="electrolytes-title">⚡ Electrolytes</div>
+                <div class="electrolytes-body">
+                    <p>Water alone isn't enough. Sodium helps your body actually retain the fluid you drink.</p>
+                    <div class="electrolyte-when">
+                        <div class="electrolyte-item">
+                            <span class="electrolyte-check">✓</span>
+                            <span>Sessions over 60 minutes</span>
+                        </div>
+                        <div class="electrolyte-item">
+                            <span class="electrolyte-check">✓</span>
+                            <span>High sweat rate or hot environment</span>
+                        </div>
+                        <div class="electrolyte-item">
+                            <span class="electrolyte-check">✓</span>
+                            <span>Training twice in 12 hours</span>
+                        </div>
+                        <div class="electrolyte-item">
+                            <span class="electrolyte-check">✓</span>
+                            <span>Competition day</span>
+                        </div>
+                    </div>
+                    <div class="electrolyte-tip">Add sodium/electrolytes to your post-training water to improve fluid retention and speed up rehydration.</div>
+                </div>
+            </div>
+
+            <div class="tips">
+                <div class="tips-title">Make It Happen</div>
+                <div class="tip-item">
+                    <span class="tip-icon">🌅</span>
+                    <span class="tip-text">Start with 500ml before your first coffee</span>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">🍶</span>
+                    <span class="tip-text">Carry a bottle — if it's there, you'll drink it</span>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">⏰</span>
+                    <span class="tip-text">Set hourly reminders until it's habit</span>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">⚖️</span>
+                    <span class="tip-text">Weigh yourself before and after training to track fluid loss</span>
+                </div>
+                <div class="tip-item">
+                    <span class="tip-icon">🚽</span>
+                    <span class="tip-text">Pale straw = good. Apple juice = drink more.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer pdf-hide">
+            <a href="https://www.team-silverback.com" target="_blank">www.team-silverback.com</a>
+            <div class="tagline">Train Fuelled, Make History</div>
+            <div class="license">© 2026 Archangel Project LLC. Licensed exclusively to Silverback Performance Coaching LLC. All rights reserved.</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleAdvanced() {
+            const section = document.getElementById('advanced-section');
+            section.classList.toggle('show');
+        }
+
+        function calculate() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            
+            if (!weight || weight < 30 || weight > 200) {
+                alert('Please enter a valid weight between 30-200kg');
+                return;
+            }
+
+            const training = parseInt(document.getElementById('training').value);
+            const caffeine = document.getElementById('caffeine').checked;
+            const protein = document.getElementById('protein').checked;
+            const hot = document.getElementById('hot').checked;
+            const cutting = document.getElementById('cutting').checked;
+
+            const sweatPresetEl = document.getElementById('sweat-preset');
+            const massChangeEl = document.getElementById('mass-change');
+            const sweatPreset = sweatPresetEl ? sweatPresetEl.value : 'auto';
+            const massChangeInput = massChangeEl ? parseFloat(massChangeEl.value) : NaN;
+
+            // Baseline: 37.5ml per kg (middle of 35-40 range)
+            let baselineMl = weight * 37.5;
+
+            // Training addition: default ~0.75L per hour, unless advanced preset chosen
+            let trainingMl = 0;
+            if (training > 0) {
+                let sweatRateLPerHour = 0.75;
+                if (sweatPreset !== 'auto') {
+                    sweatRateLPerHour = parseFloat(sweatPreset);
+                }
+                const trainingHours = training / 60;
+                trainingMl = sweatRateLPerHour * trainingHours * 1000;
+                trainingMl = Math.round(trainingMl / 250) * 250;
+            }
+
+            // Additional factors: 250-500ml each
+            let factorsMl = 0;
+            if (caffeine) factorsMl += 400;
+            if (protein) factorsMl += 300;
+            if (hot) factorsMl += 500;
+            if (cutting) factorsMl += 250;
+
+            const totalMl = baselineMl + trainingMl + factorsMl;
+            const totalLitres = totalMl / 1000;
+            const glasses = Math.round(totalMl / 250);
+            const perHour = Math.round(totalMl / 16); // Assuming 16 waking hours
+
+            document.getElementById('total-litres').textContent = totalLitres.toFixed(1);
+            document.getElementById('total-ml').textContent = Math.round(totalMl);
+            document.getElementById('total-glasses').textContent = glasses;
+            document.getElementById('baseline').textContent = (baselineMl / 1000).toFixed(1) + 'L';
+            document.getElementById('training-add').textContent = '+' + (trainingMl / 1000).toFixed(1) + 'L';
+            document.getElementById('factors-add').textContent = '+' + (factorsMl / 1000).toFixed(1) + 'L';
+            document.getElementById('per-hour').textContent = perHour + 'ml';
+
+            document.getElementById('results').classList.add('show');
+
+            // Post-exercise rehydration example: use mass change if given, else estimate
+            let lossKg;
+            if (!isNaN(massChangeInput) && massChangeInput < 0) {
+                lossKg = Math.abs(massChangeInput);
+            } else if (training > 0) {
+                lossKg = 0.5 + (training / 150);
+            } else {
+                lossKg = 0.5;
+            }
+
+            const rehydrateAmount = (lossKg * 1.5).toFixed(1);
+            document.getElementById('rehydration-example').textContent = 
+                `Lost ${lossKg.toFixed(1)}kg during training? Drink ${rehydrateAmount}L in the 4-6 hours after.`;
+
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function downloadPdf() {
+            // Simple: trigger browser print dialog; user can choose "Save as PDF"
+            window.print();
+        }
+
+        document.getElementById('weight').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculate();
+            }
+        });
+    </script>
+</body>
+</html>

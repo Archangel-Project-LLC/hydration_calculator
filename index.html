@@ -798,20 +798,12 @@
             </div>
             
             <div class="input-group">
-                <label class="input-label">Your Sweat Rate (if known)</label>
-                <select id="sweat-rate" class="select-field">
-                    <option value="0.75">Use default (0.75 L/hour)</option>
-                    <option value="0.5">Low sweater (0.5 L/hour)</option>
-                    <option value="1.0">Moderate sweater (1.0 L/hour)</option>
-                    <option value="1.25">Heavy sweater (1.25 L/hour)</option>
-                    <option value="1.5">Very heavy sweater (1.5 L/hour)</option>
-                    <option value="custom">Custom (enter below)</option>
-                </select>
-                <div class="input-wrapper" id="custom-sweat-wrapper" style="display: none; margin-top: 8px;">
-                    <input type="number" id="custom-sweat" class="input-field" placeholder="1.3" step="0.1" min="0.3" max="3">
+                <label class="input-label">Your Sweat Rate</label>
+                <div class="input-wrapper">
+                    <input type="number" id="sweat-rate" class="input-field" placeholder="0.75" step="0.01" min="0.3" max="3" value="0.75">
                     <span class="input-unit">L/hr</span>
                 </div>
-                <div class="inline-note">Use the calculator above to find your actual sweat rate</div>
+                <div class="inline-note">Use the sweat rate calculator above to find your actual number. Default is 0.75 L/hour if you haven't tested yet.</div>
             </div>
             
             <div class="input-group">
@@ -982,12 +974,6 @@
     </div>
     
     <script>
-        // Show/hide custom sweat rate input
-        document.getElementById('sweat-rate').addEventListener('change', function() {
-            const wrapper = document.getElementById('custom-sweat-wrapper');
-            wrapper.style.display = this.value === 'custom' ? 'flex' : 'none';
-        });
-        
         // Calculate sweat rate from test data
         function calculateSweatRate() {
             const preWeight = parseFloat(document.getElementById('pre-weight').value);
@@ -1008,23 +994,8 @@
             document.getElementById('sweat-rate-result').style.display = 'flex';
             document.getElementById('sweat-rate-value').textContent = sweatRatePerHour.toFixed(2) + ' L/hour';
             
-            // Auto-select closest option or set custom
-            const sweatSelect = document.getElementById('sweat-rate');
-            if (sweatRatePerHour <= 0.6) {
-                sweatSelect.value = '0.5';
-            } else if (sweatRatePerHour <= 0.85) {
-                sweatSelect.value = '0.75';
-            } else if (sweatRatePerHour <= 1.1) {
-                sweatSelect.value = '1.0';
-            } else if (sweatRatePerHour <= 1.35) {
-                sweatSelect.value = '1.25';
-            } else if (sweatRatePerHour <= 1.6) {
-                sweatSelect.value = '1.5';
-            } else {
-                sweatSelect.value = 'custom';
-                document.getElementById('custom-sweat-wrapper').style.display = 'flex';
-                document.getElementById('custom-sweat').value = sweatRatePerHour.toFixed(2);
-            }
+            // Auto-populate sweat rate in main calculator
+            document.getElementById('sweat-rate').value = sweatRatePerHour.toFixed(2);
         }
         
         // Main hydration calculator
@@ -1042,11 +1013,8 @@
             const hot = document.getElementById('hot').checked;
             const cutting = document.getElementById('cutting').checked;
             
-            // Get sweat rate
-            let sweatRate = parseFloat(document.getElementById('sweat-rate').value);
-            if (document.getElementById('sweat-rate').value === 'custom') {
-                sweatRate = parseFloat(document.getElementById('custom-sweat').value) || 0.75;
-            }
+            // Get sweat rate from input
+            let sweatRate = parseFloat(document.getElementById('sweat-rate').value) || 0.75;
             
             // Baseline: 37.5ml per kg (middle of 35-40 range)
             let baselineMl = weight * 37.5;

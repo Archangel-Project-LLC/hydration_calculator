@@ -12,8 +12,8 @@
             --bg-elevated: #0f2847;
             --border: #1a3a5c;
             --text-primary: #ffffff;
-            --text-secondary: #a0b8d0;
-            --text-muted: #6a8aa8;
+            --text-secondary: #ffffff;
+            --text-muted: #ffffff;
             --accent: #4a7ab0;
             --accent-hover: #5a8ac4;
             --success: #32d74b;
@@ -114,72 +114,6 @@
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-muted);
-        }
-        .select-field {
-            width: 100%;
-            padding: 14px 16px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            background: var(--bg-elevated);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            outline: none;
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%236a8aa8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 20px;
-            transition: border-color 0.2s ease;
-        }
-        .select-field:focus {
-            border-color: var(--accent);
-        }
-        .checkbox-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-        .checkbox-input {
-            display: none;
-        }
-        .checkbox-box {
-            width: 22px;
-            height: 22px;
-            border: 2px solid var(--border);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-        .checkbox-input:checked + .checkbox-box {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-        .checkbox-box svg {
-            width: 14px;
-            height: 14px;
-            stroke: var(--text-primary);
-            stroke-width: 3;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-        .checkbox-input:checked + .checkbox-box svg {
-            opacity: 1;
-        }
-        .checkbox-label {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
         }
         .btn-row {
             display: flex;
@@ -786,59 +720,6 @@
                     <span class="input-unit">kg</span>
                 </div>
             </div>
-            
-            <div class="input-group">
-                <label class="input-label">Training Duration Today</label>
-                <select id="training" class="select-field">
-                    <option value="0">Rest day</option>
-                    <option value="60">Up to 60 mins</option>
-                    <option value="90">60-90 mins</option>
-                    <option value="120">90-120 mins</option>
-                    <option value="150">2+ hours</option>
-                </select>
-            </div>
-            
-            <div class="input-group">
-                <label class="input-label">Additional Factors</label>
-                <div class="checkbox-group">
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="caffeine" class="checkbox-input">
-                        <span class="checkbox-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                        </span>
-                        <span class="checkbox-label">High caffeine intake (3+ cups / energy drinks)</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="protein" class="checkbox-input">
-                        <span class="checkbox-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                        </span>
-                        <span class="checkbox-label">High protein diet (2g+ per kg)</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="hot" class="checkbox-input">
-                        <span class="checkbox-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                        </span>
-                        <span class="checkbox-label">Hot environment / heated gym</span>
-                    </label>
-                    <label class="checkbox-item">
-                        <input type="checkbox" id="cutting" class="checkbox-input">
-                        <span class="checkbox-box">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                        </span>
-                        <span class="checkbox-label">Currently in a calorie deficit</span>
-                    </label>
-                </div>
-            </div>
         </div>
         
         <div class="btn-row pdf-hide">
@@ -865,10 +746,6 @@
                 <div class="breakdown-item">
                     <div class="breakdown-value" id="training-add">+0L</div>
                     <div class="breakdown-label">Training</div>
-                </div>
-                <div class="breakdown-item">
-                    <div class="breakdown-value" id="factors-add">+0L</div>
-                    <div class="breakdown-label">Factors</div>
                 </div>
                 <div class="breakdown-item">
                     <div class="breakdown-value" id="per-hour">0ml</div>
@@ -990,7 +867,7 @@
             document.getElementById('sweat-rate').value = sweatRatePerHour.toFixed(2);
         }
         
-        // Main hydration calculator
+        // Main hydration calculator - simplified
         function calculate() {
             const weight = parseFloat(document.getElementById('weight').value);
             
@@ -999,34 +876,18 @@
                 return;
             }
             
-            const training = parseInt(document.getElementById('training').value);
-            const caffeine = document.getElementById('caffeine').checked;
-            const protein = document.getElementById('protein').checked;
-            const hot = document.getElementById('hot').checked;
-            const cutting = document.getElementById('cutting').checked;
-            
             // Get sweat rate from input
             let sweatRate = parseFloat(document.getElementById('sweat-rate').value) || 0.75;
             
             // Baseline: 37.5ml per kg (middle of 35-40 range)
             let baselineMl = weight * 37.5;
             
-            // Training addition based on sweat rate
-            let trainingMl = 0;
-            if (training > 0) {
-                const trainingHours = training / 60;
-                trainingMl = sweatRate * trainingHours * 1000;
-                trainingMl = Math.round(trainingMl / 50) * 50; // Round to nearest 50ml
-            }
+            // Training addition based on sweat rate (assume 90 min session as default)
+            const defaultTrainingHours = 1.5;
+            let trainingMl = sweatRate * defaultTrainingHours * 1000;
+            trainingMl = Math.round(trainingMl / 50) * 50; // Round to nearest 50ml
             
-            // Additional factors
-            let factorsMl = 0;
-            if (caffeine) factorsMl += 400;
-            if (protein) factorsMl += 300;
-            if (hot) factorsMl += 500;
-            if (cutting) factorsMl += 250;
-            
-            const totalMl = baselineMl + trainingMl + factorsMl;
+            const totalMl = baselineMl + trainingMl;
             const totalLitres = totalMl / 1000;
             const glasses = Math.round(totalMl / 250);
             const perHour = Math.round(totalMl / 16);
@@ -1037,20 +898,13 @@
             document.getElementById('total-glasses').textContent = glasses;
             document.getElementById('baseline').textContent = (baselineMl / 1000).toFixed(1) + 'L';
             document.getElementById('training-add').textContent = '+' + (trainingMl / 1000).toFixed(1) + 'L';
-            document.getElementById('factors-add').textContent = '+' + (factorsMl / 1000).toFixed(1) + 'L';
             document.getElementById('per-hour').textContent = perHour + 'ml';
             
-            // Update rehydration example based on training and sweat rate
-            if (training > 0) {
-                const trainingHours = training / 60;
-                const estimatedLoss = (sweatRate * trainingHours).toFixed(1);
-                const rehydrateAmount = (estimatedLoss * 1.5).toFixed(1);
-                document.getElementById('rehydration-example').textContent = 
-                    `Lost ${estimatedLoss}L during training? Drink ${rehydrateAmount}L in the 4-6 hours after.`;
-            } else {
-                document.getElementById('rehydration-example').textContent = 
-                    'Lost 1kg during training? Drink 1.5L in the 4-6 hours after.';
-            }
+            // Update rehydration example based on sweat rate
+            const estimatedLoss = (sweatRate * defaultTrainingHours).toFixed(1);
+            const rehydrateAmount = (estimatedLoss * 1.5).toFixed(1);
+            document.getElementById('rehydration-example').textContent = 
+                `Lost ${estimatedLoss}L during training? Drink ${rehydrateAmount}L in the 4-6 hours after.`;
             
             // Show results
             document.getElementById('results').classList.add('show');

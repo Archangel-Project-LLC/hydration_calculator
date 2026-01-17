@@ -729,12 +729,14 @@
         
         <div class="results" id="results">
             <div class="result-main">
-                <div class="result-label">Your Daily Target</div>
+                <div class="result-label">Your Daily Baseline Range</div>
                 <div class="result-value">
-                    <span id="total-litres">0</span><span class="result-unit">L</span>
+                    <span id="total-litres-low">0</span><span class="result-unit">L</span>
+                    <span style="margin: 0 8px;">-</span>
+                    <span id="total-litres-high">0</span><span class="result-unit">L</span>
                 </div>
                 <div class="result-note">
-                    That's <span id="total-ml">0</span>ml or <span id="total-glasses">0</span> glasses
+                    That's <span id="total-ml-low">0</span>-<span id="total-ml-high">0</span>ml or <span id="total-glasses-low">0</span>-<span id="total-glasses-high">0</span> glasses
                 </div>
             </div>
             
@@ -873,22 +875,26 @@
                 return;
             }
             
-            // Baseline: 37.5ml per kg (middle of 35-40 range)
-            let baselineMl = weight * 37.5;
+            // Baseline: 35-40ml per kg range
             const baselineLowMl = weight * 35;
             const baselineHighMl = weight * 40;
+            const baselineMidMl = weight * 37.5;
             
-            const totalMl = baselineMl;
-            const totalLitres = totalMl / 1000;
-            const glasses = Math.round(totalMl / 250);
-            const perHour = Math.round(totalMl / 16);
+            const totalLowLitres = baselineLowMl / 1000;
+            const totalHighLitres = baselineHighMl / 1000;
+            const glassesLow = Math.round(baselineLowMl / 250);
+            const glassesHigh = Math.round(baselineHighMl / 250);
+            const perHour = Math.round(baselineMidMl / 16);
             
             // Update display
-            document.getElementById('total-litres').textContent = totalLitres.toFixed(1);
-            document.getElementById('total-ml').textContent = Math.round(totalMl);
-            document.getElementById('total-glasses').textContent = glasses;
-            document.getElementById('baseline').textContent = (baselineMl / 1000).toFixed(1) + 'L';
-            document.getElementById('baseline-range').textContent = `(${(baselineLowMl / 1000).toFixed(1)}-${(baselineHighMl / 1000).toFixed(1)}L range)`;
+            document.getElementById('total-litres-low').textContent = totalLowLitres.toFixed(1);
+            document.getElementById('total-litres-high').textContent = totalHighLitres.toFixed(1);
+            document.getElementById('total-ml-low').textContent = Math.round(baselineLowMl);
+            document.getElementById('total-ml-high').textContent = Math.round(baselineHighMl);
+            document.getElementById('total-glasses-low').textContent = glassesLow;
+            document.getElementById('total-glasses-high').textContent = glassesHigh;
+            document.getElementById('baseline').textContent = (baselineMidMl / 1000).toFixed(1) + 'L';
+            document.getElementById('baseline-range').textContent = `(${totalLowLitres.toFixed(1)}-${totalHighLitres.toFixed(1)}L range)`;
             document.getElementById('per-hour').textContent = perHour + 'ml';
             
             // Show results

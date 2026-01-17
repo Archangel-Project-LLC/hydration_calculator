@@ -741,12 +741,8 @@
             <div class="breakdown">
                 <div class="breakdown-item">
                     <div class="breakdown-value" id="baseline">0L</div>
-                    <div class="breakdown-label">Baseline</div>
+                    <div class="breakdown-label">Baseline Daily</div>
                     <div class="inline-note" id="baseline-range"></div>
-                </div>
-                <div class="breakdown-item">
-                    <div class="breakdown-value" id="training-add">+0L</div>
-                    <div class="breakdown-label">Training</div>
                 </div>
                 <div class="breakdown-item">
                     <div class="breakdown-value" id="per-hour">0ml</div>
@@ -868,7 +864,7 @@
             document.getElementById('sweat-rate').value = sweatRatePerHour.toFixed(2);
         }
         
-        // Main hydration calculator - simplified
+        // Main hydration calculator - baseline only
         function calculate() {
             const weight = parseFloat(document.getElementById('weight').value);
             
@@ -877,23 +873,12 @@
                 return;
             }
             
-            // Get sweat rate from input - if not calculated, default to 0 (baseline only)
-            let sweatRate = parseFloat(document.getElementById('sweat-rate').value) || 0;
-            
             // Baseline: 37.5ml per kg (middle of 35-40 range)
             let baselineMl = weight * 37.5;
             const baselineLowMl = weight * 35;
             const baselineHighMl = weight * 40;
             
-            // Only add training if sweat rate has been calculated
-            let trainingMl = 0;
-            if (sweatRate > 0) {
-                const defaultTrainingHours = 1.5;
-                trainingMl = sweatRate * defaultTrainingHours * 1000;
-                trainingMl = Math.round(trainingMl / 50) * 50; // Round to nearest 50ml
-            }
-            
-            const totalMl = baselineMl + trainingMl;
+            const totalMl = baselineMl;
             const totalLitres = totalMl / 1000;
             const glasses = Math.round(totalMl / 250);
             const perHour = Math.round(totalMl / 16);
@@ -904,20 +889,7 @@
             document.getElementById('total-glasses').textContent = glasses;
             document.getElementById('baseline').textContent = (baselineMl / 1000).toFixed(1) + 'L';
             document.getElementById('baseline-range').textContent = `(${(baselineLowMl / 1000).toFixed(1)}-${(baselineHighMl / 1000).toFixed(1)}L range)`;
-            document.getElementById('training-add').textContent = '+' + (trainingMl / 1000).toFixed(1) + 'L';
             document.getElementById('per-hour').textContent = perHour + 'ml';
-            
-            // Update rehydration example based on sweat rate - only show if sweat rate exists
-            if (sweatRate > 0) {
-                const defaultTrainingHours = 1.5;
-                const estimatedLoss = (sweatRate * defaultTrainingHours).toFixed(1);
-                const rehydrateAmount = (estimatedLoss * 1.5).toFixed(1);
-                document.getElementById('rehydration-example').textContent = 
-                    `Lost ${estimatedLoss}L during training? Drink ${rehydrateAmount}L in the 4-6 hours after.`;
-            } else {
-                document.getElementById('rehydration-example').textContent = 
-                    'Calculate your sweat rate above to get personalized rehydration targets.';
-            }
             
             // Show results
             document.getElementById('results').classList.add('show');

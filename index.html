@@ -226,12 +226,12 @@
             color: var(--text-secondary);
             margin-bottom: 12px;
         }
-        .piss-chart {
+        .urine-chart {
             display: flex;
             gap: 4px;
             margin-bottom: 12px;
         }
-        .piss-level {
+        .urine-level {
             flex: 1;
             height: 40px;
             border-radius: 6px;
@@ -239,24 +239,24 @@
             cursor: pointer;
             transition: transform 0.2s ease;
         }
-        .piss-level:hover {
+        .urine-level:hover {
             transform: scaleY(1.1);
         }
-        .piss-level.level-1 { background: #f5f5dc; }
-        .piss-level.level-2 { background: #f0e68c; }
-        .piss-level.level-3 { background: #daa520; }
-        .piss-level.level-4 { background: #b8860b; }
-        .piss-level.level-5 { background: #8b4513; }
-        .piss-labels {
+        .urine-level.level-1 { background: #f5f5dc; }
+        .urine-level.level-2 { background: #f0e68c; }
+        .urine-level.level-3 { background: #daa520; }
+        .urine-level.level-4 { background: #b8860b; }
+        .urine-level.level-5 { background: #8b4513; }
+        .urine-labels {
             display: flex;
             justify-content: space-between;
         }
-        .piss-label {
+        .urine-label {
             font-size: 0.7rem;
             color: var(--text-muted);
         }
-        .piss-label.good { color: var(--success); }
-        .piss-label.bad { color: var(--danger); }
+        .urine-label.good { color: var(--success); }
+        .urine-label.bad { color: var(--danger); }
         
         /* Sweat Rate Test Card */
         .sweat-test-card {
@@ -742,6 +742,7 @@
                 <div class="breakdown-item">
                     <div class="breakdown-value" id="baseline">0L</div>
                     <div class="breakdown-label">Baseline</div>
+                    <div class="inline-note" id="baseline-range"></div>
                 </div>
                 <div class="breakdown-item">
                     <div class="breakdown-value" id="training-add">+0L</div>
@@ -754,17 +755,17 @@
             </div>
             
             <div class="hydration-status">
-                <div class="status-title">Check Your Piss</div>
-                <div class="piss-chart">
-                    <div class="piss-level level-1"></div>
-                    <div class="piss-level level-2"></div>
-                    <div class="piss-level level-3"></div>
-                    <div class="piss-level level-4"></div>
-                    <div class="piss-level level-5"></div>
+                <div class="status-title">Check Your Urine</div>
+                <div class="urine-chart">
+                    <div class="urine-level level-1"></div>
+                    <div class="urine-level level-2"></div>
+                    <div class="urine-level level-3"></div>
+                    <div class="urine-level level-4"></div>
+                    <div class="urine-level level-5"></div>
                 </div>
-                <div class="piss-labels">
-                    <span class="piss-label good">✓ Hydrated</span>
-                    <span class="piss-label bad">✗ Dehydrated</span>
+                <div class="urine-labels">
+                    <span class="urine-label good">✓ Hydrated</span>
+                    <span class="urine-label bad">✗ Dehydrated</span>
                 </div>
             </div>
             
@@ -881,6 +882,8 @@
             
             // Baseline: 37.5ml per kg (middle of 35-40 range)
             let baselineMl = weight * 37.5;
+            const baselineLowMl = weight * 35;
+            const baselineHighMl = weight * 40;
             
             // Training addition based on sweat rate (assume 90 min session as default)
             const defaultTrainingHours = 1.5;
@@ -897,6 +900,7 @@
             document.getElementById('total-ml').textContent = Math.round(totalMl);
             document.getElementById('total-glasses').textContent = glasses;
             document.getElementById('baseline').textContent = (baselineMl / 1000).toFixed(1) + 'L';
+            document.getElementById('baseline-range').textContent = `(${(baselineLowMl / 1000).toFixed(1)}-${(baselineHighMl / 1000).toFixed(1)}L range)`;
             document.getElementById('training-add').textContent = '+' + (trainingMl / 1000).toFixed(1) + 'L';
             document.getElementById('per-hour').textContent = perHour + 'ml';
             

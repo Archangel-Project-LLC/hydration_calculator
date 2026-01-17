@@ -45,7 +45,7 @@
             font-size: 0.75rem;
             font-weight: 600;
             letter-spacing: 2px;
-            color: var(--accent);
+            color: #ffffff;
             text-transform: uppercase;
             margin-bottom: 8px;
         }
@@ -69,7 +69,7 @@
         .card-title {
             font-size: 0.85rem;
             font-weight: 600;
-            color: var(--accent);
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 20px;
@@ -204,7 +204,7 @@
         .breakdown-value {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--accent);
+            color: #ffffff;
             margin-bottom: 4px;
         }
         .breakdown-label {
@@ -346,7 +346,7 @@
         .example-title {
             font-size: 0.75rem;
             font-weight: 600;
-            color: var(--accent);
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 12px;
@@ -383,7 +383,7 @@
         .sweat-input-title {
             font-size: 0.85rem;
             font-weight: 600;
-            color: var(--accent);
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 16px;
@@ -453,7 +453,7 @@
         .rehydration-percent {
             font-size: 2.5rem;
             font-weight: 700;
-            color: var(--accent);
+            color: #ffffff;
             line-height: 1;
         }
         .rehydration-title {
@@ -494,7 +494,7 @@
         .electrolytes-title {
             font-size: 1rem;
             font-weight: 700;
-            color: var(--accent);
+            color: #ffffff;
             margin-bottom: 12px;
         }
         .electrolytes-body p {
@@ -537,7 +537,7 @@
         .tips-title {
             font-size: 0.85rem;
             font-weight: 600;
-            color: var(--accent);
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 16px;
@@ -571,7 +571,7 @@
             font-size: 0.8rem;
         }
         .footer a {
-            color: var(--accent);
+            color: #ffffff;
             text-decoration: none;
         }
         .footer a:hover {
@@ -619,6 +619,24 @@
             <p class="subtitle">Find out exactly how much water you need</p>
         </div>
         
+        <!-- Main Calculator -->
+        <div class="card">
+            <div class="card-title">Daily Hydration Calculator</div>
+            
+            <div class="input-group">
+                <label class="input-label">Body Weight</label>
+                <div class="input-wrapper">
+                    <input type="number" id="weight" class="input-field" placeholder="80" min="30" max="200">
+                    <span class="input-unit">kg</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="btn-row pdf-hide">
+            <button class="calculate-btn" onclick="calculate()">Calculate Daily Needs</button>
+            <button class="pdf-btn" onclick="downloadPdf()">Download PDF</button>
+        </div>
+        
         <!-- Sweat Rate Test Section -->
         <div class="sweat-test-card">
             <div class="sweat-test-header">
@@ -636,7 +654,7 @@
                 </div>
                 <div class="sweat-step">
                     <span class="step-number">2</span>
-                    <span class="step-text">Train for <strong>60 minutes</strong> — note how much you drink during</span>
+                    <span class="step-text">Train and make a note of the session length</span>
                 </div>
                 <div class="sweat-step">
                     <span class="step-number">3</span>
@@ -707,24 +725,6 @@
                 <span class="sweat-result-value" id="sweat-rate-value">0 L/hour</span>
             </div>
             <input type="hidden" id="sweat-rate" value="0.75">
-        </div>
-        
-        <!-- Main Calculator -->
-        <div class="card">
-            <div class="card-title">Daily Hydration Calculator</div>
-            
-            <div class="input-group">
-                <label class="input-label">Body Weight</label>
-                <div class="input-wrapper">
-                    <input type="number" id="weight" class="input-field" placeholder="80" min="30" max="200">
-                    <span class="input-unit">kg</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="btn-row pdf-hide">
-            <button class="calculate-btn" onclick="calculate()">Calculate Daily Needs</button>
-            <button class="pdf-btn" onclick="downloadPdf()">Download PDF</button>
         </div>
         
         <div class="results" id="results">
@@ -877,18 +877,21 @@
                 return;
             }
             
-            // Get sweat rate from input
-            let sweatRate = parseFloat(document.getElementById('sweat-rate').value) || 0.75;
+            // Get sweat rate from input - if not calculated, default to 0 (baseline only)
+            let sweatRate = parseFloat(document.getElementById('sweat-rate').value) || 0;
             
             // Baseline: 37.5ml per kg (middle of 35-40 range)
             let baselineMl = weight * 37.5;
             const baselineLowMl = weight * 35;
             const baselineHighMl = weight * 40;
             
-            // Training addition based on sweat rate (assume 90 min session as default)
-            const defaultTrainingHours = 1.5;
-            let trainingMl = sweatRate * defaultTrainingHours * 1000;
-            trainingMl = Math.round(trainingMl / 50) * 50; // Round to nearest 50ml
+            // Only add training if sweat rate has been calculated
+            let trainingMl = 0;
+            if (sweatRate > 0) {
+                const defaultTrainingHours = 1.5;
+                trainingMl = sweatRate * defaultTrainingHours * 1000;
+                trainingMl = Math.round(trainingMl / 50) * 50; // Round to nearest 50ml
+            }
             
             const totalMl = baselineMl + trainingMl;
             const totalLitres = totalMl / 1000;
@@ -904,11 +907,17 @@
             document.getElementById('training-add').textContent = '+' + (trainingMl / 1000).toFixed(1) + 'L';
             document.getElementById('per-hour').textContent = perHour + 'ml';
             
-            // Update rehydration example based on sweat rate
-            const estimatedLoss = (sweatRate * defaultTrainingHours).toFixed(1);
-            const rehydrateAmount = (estimatedLoss * 1.5).toFixed(1);
-            document.getElementById('rehydration-example').textContent = 
-                `Lost ${estimatedLoss}L during training? Drink ${rehydrateAmount}L in the 4-6 hours after.`;
+            // Update rehydration example based on sweat rate - only show if sweat rate exists
+            if (sweatRate > 0) {
+                const defaultTrainingHours = 1.5;
+                const estimatedLoss = (sweatRate * defaultTrainingHours).toFixed(1);
+                const rehydrateAmount = (estimatedLoss * 1.5).toFixed(1);
+                document.getElementById('rehydration-example').textContent = 
+                    `Lost ${estimatedLoss}L during training? Drink ${rehydrateAmount}L in the 4-6 hours after.`;
+            } else {
+                document.getElementById('rehydration-example').textContent = 
+                    'Calculate your sweat rate above to get personalized rehydration targets.';
+            }
             
             // Show results
             document.getElementById('results').classList.add('show');
